@@ -1,0 +1,7 @@
+#+author: Alexandre Martos
+
+* Luashell
+
+A very simple Lua interpreter + shell implementation in C++, as a
+demo. It currently depends on Lua version =5.4= and GNU's =readline=
+library.

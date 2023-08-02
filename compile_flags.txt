@@ -1,0 +1,6 @@
+-xc++
+-Wall
+-Wextra
+-Iinclude
+-llua5.4
+-lreadline
