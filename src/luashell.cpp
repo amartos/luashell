@@ -8,10 +8,76 @@
  */
 
 #include <iostream>
+#include <experimental/filesystem>
+namespace fs = std::experimental::filesystem;
+
 #include "lua5.4/lua.hpp"
 
 #include "readline/readline.h"
 #include "readline/history.h"
+
+/**
+ * @var GLOBALS
+ * @since 0.2.0
+ * @brief Shell predefined globals.
+ *
+ * The values are:
+ * - an environment variable for a path
+ * - a default value if the environment variable is empty/undefined
+ * - a value for the global; if the first and second values are
+ * non-@c NULL, this is a file name; the remaining of the path are
+ * directories
+ * - the global's variable name in Lua
+ *
+ * This table must finish with a sentinel (the check is done on the
+ * global's variable name).
+ */
+static const char* const GLOBALS[][4] {
+    {"XDG_CONFIG_HOME", "~/.config", "config.lua", "CONFFILE"},
+    {NULL,}
+};
+
+/**
+ * @since 0.2.0
+ * @brief Generate the shell's globals.
+ * @param L Lua's state..
+ */
+static void lua_setGlobals(lua_State *L)
+{
+    const char* value {};
+    fs::path path {};
+    for (auto i = 0; GLOBALS[i][3]; ++i) {
+        value = GLOBALS[i][0];
+        if ((value && (value = std::getenv(value)) && *value) || (value = GLOBALS[i][1])) {
+            path  = value;
+            path /= "/luashell/";
+            fs::create_directories(path);
+            path /= GLOBALS[i][2];
+            value = path.c_str();
+        }
+        else value = GLOBALS[i][2];
+
+        lua_pushstring(L, value);
+        lua_setglobal(L, GLOBALS[i][3]);
+    }
+}
+
+/**
+ * @since 0.2.0
+ * @brief Get the global string value associated to @p key.
+ * @param L Lua's state.
+ * @param key The global's name.
+ * @return The string value associated to @p key.
+ */
+std::string lua_global(lua_State *L, const char* key)
+{
+    lua_getglobal(L, key);
+    std::string value {};
+    if (lua_isfunction(L, -1)) lua_pcall(L, 0, 1, 0);
+    value = lua_tostring(L, -1);
+    lua_pop(L, 1);
+    return value;
+}
 
 /**
  * @since 0.1.0
@@ -66,6 +132,11 @@ int main(int argc, const char* argv[])
 {
     lua_State* L { luaL_newstate() };
     luaL_openlibs(L);
+    lua_setGlobals(L);
+    std::string conffile {lua_global(L, "CONFFILE")};
+    if (fs::exists(conffile) && luaL_dofile(L, conffile.c_str()) && argc > 1)
+        lua_print(L, 1);
+
     argc > 1 ? scripts(L, ++argv) : shell(L);
     lua_close(L);
     return 0;

@@ -4,3 +4,4 @@
 -Iinclude
 -llua5.4
 -lreadline
+-lstdc++fs

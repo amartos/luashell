@@ -5,3 +5,26 @@
 A very simple Lua interpreter + shell implementation in C++, as a
 demo. It currently depends on Lua version =5.4= and GNU's =readline=
 library.
+
+** Configuration
+
+The interpreter loads the file located at
+=$XDG_CONFIG_HOME/luashell/config.lua=, if it exists, before execution
+of any script or the shell's prompt.
+
+** Environment
+
+The following globals are defined. You can easily redefine them in the
+config file.
+
+The =expected types= column contains a comma-separated list of types
+that the shell expects to find stored in the variable; the functions
+description syntax is: =rettype f(argtype, argtype, ...)=.
+
+If no types are defined, the modification of the variable has no
+effect on the interpreter's startup (the global is read-only, or
+kind-of).
+
+| name     | initial value                        | description                   | types              |
+|----------+--------------------------------------+-------------------------------+--------------------|
+| CONFFILE | $XDG_CONFIG_HOME/luashell/config.lua | the interpreter's config file |                    |
