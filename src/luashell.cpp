@@ -36,6 +36,7 @@ static const char* const GLOBALS[][4] {
     {"XDG_CONFIG_HOME", "~/.config", "config.lua", "CONFFILE"},
     {"XDG_DATA_HOME", "~/.local/share", "history", "HISTFILE"},
     {NULL, NULL, ">>> ", "PROMPT"},
+    {NULL, NULL, "", "BANNER"},
     {NULL,}
 };
 
@@ -118,6 +119,7 @@ static void shell(lua_State *L)
 {
     char* buffer {};
     read_history(lua_global(L, "HISTFILE").c_str());
+    std::cout << lua_global(L, "BANNER");
     while((buffer = readline(lua_global(L, "PROMPT").c_str()))) {
         lua_print(L, luaL_dostring(L, buffer));
         if (buffer[0] && buffer[0] != ' ') add_history(buffer);
