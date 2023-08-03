@@ -1,7 +1,7 @@
 /**
  * @file luashell.cpp
  * @brief A very simple Lua interpreter + shell in C++
- * @version 0.1.0
+ * @version 0.2.1
  * @author Alexandre Martos
  * @email contact@amartos.fr
  * @copyright MIT license
