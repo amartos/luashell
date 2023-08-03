@@ -34,6 +34,7 @@ namespace fs = std::experimental::filesystem;
  */
 static const char* const GLOBALS[][4] {
     {"XDG_CONFIG_HOME", "~/.config", "config.lua", "CONFFILE"},
+    {"XDG_DATA_HOME", "~/.local/share", "history", "HISTFILE"},
     {NULL,}
 };
 
@@ -115,11 +116,13 @@ static void scripts(lua_State *L, const char* scripts[])
 static void shell(lua_State *L)
 {
     char* buffer {};
+    read_history(lua_global(L, "HISTFILE").c_str());
     while((buffer = readline(">>> "))) {
         lua_print(L, luaL_dostring(L, buffer));
         if (buffer[0] && buffer[0] != ' ') add_history(buffer);
         free(buffer);
     }
+    write_history(lua_global(L, "HISTFILE").c_str());
 }
 
 /**

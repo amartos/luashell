@@ -28,3 +28,4 @@ kind-of).
 | name     | initial value                        | description                   | types              |
 |----------+--------------------------------------+-------------------------------+--------------------|
 | CONFFILE | $XDG_CONFIG_HOME/luashell/config.lua | the interpreter's config file |                    |
+| HISTFILE | $XDG_DATA_HOME/luashell/history      | the shell's history file      | string, string f() |
