@@ -10,10 +10,8 @@
 #include <iostream>
 #include "lua5.4/lua.hpp"
 
-extern "C" {
 #include "readline/readline.h"
 #include "readline/history.h"
-}
 
 /**
  * @since 0.1.0
