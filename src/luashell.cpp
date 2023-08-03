@@ -51,7 +51,7 @@ static void shell(lua_State *L)
     char* buffer {};
     while((buffer = readline(">>> "))) {
         lua_print(L, luaL_dostring(L, buffer));
-        if (buffer[0]) add_history(buffer);
+        if (buffer[0] && buffer[0] != ' ') add_history(buffer);
         free(buffer);
     }
 }
