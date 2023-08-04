@@ -1,12 +1,13 @@
 /**
  * @file luashell.cpp
  * @brief A very simple Lua interpreter + shell in C++
- * @version 0.2.1
+ * @version 0.3.1
  * @author Alexandre Martos
  * @email contact@amartos.fr
  * @copyright MIT license
  */
 
+#include <cstdarg>
 #include <iostream>
 #include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;
@@ -48,26 +49,51 @@ static const char* const GLOBALS[][4] {
 };
 
 /**
+ * @since 0.3.1
+ * @brief Build a path string and make the directory component.
+ * @warning Needs a sentinel NULL value.
+ * @param root The root component of the path.
+ * @param ... Additional components to append to the path.
+ * @return The built path string.
+ */
+ __attribute__((sentinel))
+std::string mkpath(const char* root, ...)
+{
+    fs::path path = root ? root : "";
+    va_list components {};
+    va_start(components, root);
+    while((root = va_arg(components, const char*)))
+        path /= root;
+    va_end(components);
+    fs::create_directories(path.parent_path());
+    std::string retval {path.c_str()};
+    return retval;
+}
+
+/**
  * @since 0.2.0
  * @brief Generate the shell's globals.
  * @param L Lua's state..
  */
 static void lua_setGlobals(lua_State *L)
 {
-    const char* value {};
-    fs::path path {};
-    for (auto i = 0; GLOBALS[i][VAR]; ++i) {
-        value = GLOBALS[i][XDG];
-        if ((value && (value = std::getenv(value)) && *value) || (value = GLOBALS[i][XDGDEF])) {
-            path  = value;
-            path /= "/luashell/";
-            fs::create_directories(path);
-            path /= GLOBALS[i][VAL];
-            value = path.c_str();
+    const char* envval {};
+    std::string value {};
+    std::string envvar {"LUASHELL_"};
+    for (auto i = 0; GLOBALS[i][VAR]; ++i, envvar = "LUASHELL_") {
+        envvar += GLOBALS[i][VAR];
+        envval  = std::getenv(envvar.c_str());
+
+        if (envval && *envval)
+            value = GLOBALS[i][XDG] ? mkpath(envval, NULL) : envval;
+        else if (GLOBALS[i][XDG]) {
+            envval = std::getenv(GLOBALS[i][XDG]);
+            envval = envval && *envval ? envval : GLOBALS[i][XDGDEF];
+            value  = mkpath(envval, "luashell", GLOBALS[i][VAL], NULL);
         }
         else value = GLOBALS[i][VAL];
 
-        lua_pushstring(L, value);
+        lua_pushstring(L, value.c_str());
         lua_setglobal(L, GLOBALS[i][VAR]);
     }
 }

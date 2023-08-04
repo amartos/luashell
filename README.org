@@ -16,26 +16,40 @@ of any script or the shell's prompt.
 
 The interpreter globals are:
 
-| name in shell | default value                        | description       | types        |
-|---------------+--------------------------------------+-------------------+--------------|
-| CONFFILE      | =$XDG_CONFIG_HOME/luashell/config.lua= | config file path  |              |
-| HISTFILE      | =$XDG_DATA_HOME/luashell/history=      | history file path | str, str f() |
-| PROMPT        | =>>>=                                  | prompt string     | str, str f() |
-| BANNER        |                                      | banner string     | str, str f() |
+| name     | default value                        | description       | types        |
+|----------+--------------------------------------+-------------------+--------------|
+| CONFFILE | =$XDG_CONFIG_HOME/luashell/config.lua= | config file path  |              |
+| HISTFILE | =$XDG_DATA_HOME/luashell/history=      | history file path | str, str f() |
+| PROMPT   | =>>>=                                  | prompt string     | str, str f() |
+| BANNER   |                                      | banner string     | str, str f() |
 
-They can be easily redefined in the config file (persistent
-definition) or in the shell/script itself (session/local
-definition). Note that some redefinitions do not affect the
-shell/script (see below), others may affect it only after restart.
+*** Definition priorities
+
+Each of these globals are first fetched from the environment, where
+their name is prefixed with =LUASHELL_= (example:
+=LUASHELL_CONFFILE=). The default values are used if they are not
+defined or empty.
+
+The configuration file is loaded after fetching the environment
+values, thus they can be redefined in it using the name listed in the
+table above. Note redefinition of globals with an empty =types= value in
+the table do not matter at this stage (see the next section).
+
+Finally, they can be redefined in the shell or the script itself,
+using the names in the table, but the given values won't persist
+between sessions.
+
+*** Globals' values types
 
 The =types= column contains a comma-separated list of types
 that the shell expects to find in the variable. If the type is of the
 form =returnType f(argType, argType, ...)=, the value may be a Lua
 function of the described prototype (the name =f= does not matter).
 
-If no types are defined, the modification of the variable has no
-effect on the interpreter's startup (the global is read-only, or
-kind-of).
+If no types are defined, the variable expects a string and its
+redefinition is only considered if it is done in the environment. The
+value is still accessible and modifiable from the shell/script/config
+file, but this won't affect the interpreter at all.
 
 For a list of available types (applicable to =returnType= and =argType=),
 see the [[https://www.lua.org/manual/5.4/manual.html#pdf-type][types used by Lua]]. Their name may be shortened in the table,
