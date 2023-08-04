@@ -31,3 +31,12 @@ kind-of).
 | HISTFILE | $XDG_DATA_HOME/luashell/history      | the shell's history file      | string, string f() |
 | PROMPT   | ">>>"                                | the shell's prompt            | string, string f() |
 | BANNER   | ""                                   | the shell's banner            | string, string f() |
+
+For a list of available types (applicable to =returnType= and =argType=),
+see the [[https://www.lua.org/manual/5.4/manual.html#pdf-type][types used by Lua]]. Their name may be shortened in the table,
+for example =str= for =string=. The following types are additional to this
+list:
+
+| type | Lua type | description                     |
+|------+----------+---------------------------------|
+| int  | number   | a number that will be truncated |
