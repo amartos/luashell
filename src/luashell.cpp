@@ -109,7 +109,7 @@ std::string lua_global(lua_State *L, const char* key)
     lua_getglobal(L, key);
     std::string value {};
     if (lua_isfunction(L, -1)) lua_pcall(L, 0, 1, 0);
-    value = lua_tostring(L, -1);
+    value = lua_isnil(L, -1) ? "" : lua_tostring(L, -1);
     lua_pop(L, 1);
     return value;
 }
