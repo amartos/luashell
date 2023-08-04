@@ -21,6 +21,14 @@ namespace fs = std::experimental::filesystem;
  * @enum GlobalsIndex
  * @since 0.2.1
  * @brief Index of components in the #GLOBALS variable.
+ *
+ * The values are:
+ * - #XDG: a XDG environment variable for a path
+ * - #XDGDEF: a default value if the XDG environment variable is
+ *   empty/undefined
+ * - #VAL: a value for the global; if #XDG is non-@c NULL, this
+ *   represents the file name;
+ * - #VAR: the global's variable name in Lua
  */
 enum GlobalsIndex {XDG, XDGDEF, VAL, VAR};
 
@@ -28,17 +36,8 @@ enum GlobalsIndex {XDG, XDGDEF, VAL, VAR};
  * @var GLOBALS
  * @since 0.2.0
  * @brief Shell predefined globals.
- *
- * The values are:
- * - an environment variable for a path
- * - a default value if the environment variable is empty/undefined
- * - a value for the global; if the first and second values are
- * non-@c NULL, this is a file name; the remaining of the path are
- * directories
- * - the global's variable name in Lua
- *
- * This table must finish with a sentinel (the check is done on the
- * global's variable name).
+ * @warning This table must finish with a sentinel (the check is done
+ * on the global's variable name).
  */
 static const char* const GLOBALS[][4] {
     {"XDG_CONFIG_HOME", "~/.config", "config.lua", "CONFFILE"},
