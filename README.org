@@ -14,23 +14,28 @@ of any script or the shell's prompt.
 
 ** Environment
 
-The following globals are defined. You can easily redefine them in the
-config file.
+The interpreter globals are:
 
-The =expected types= column contains a comma-separated list of types
-that the shell expects to find stored in the variable; the functions
-description syntax is: =rettype f(argtype, argtype, ...)=.
+| name in shell | default value                        | description       | types        |
+|---------------+--------------------------------------+-------------------+--------------|
+| CONFFILE      | =$XDG_CONFIG_HOME/luashell/config.lua= | config file path  |              |
+| HISTFILE      | =$XDG_DATA_HOME/luashell/history=      | history file path | str, str f() |
+| PROMPT        | =>>>=                                  | prompt string     | str, str f() |
+| BANNER        |                                      | banner string     | str, str f() |
+
+They can be easily redefined in the config file (persistent
+definition) or in the shell/script itself (session/local
+definition). Note that some redefinitions do not affect the
+shell/script (see below), others may affect it only after restart.
+
+The =types= column contains a comma-separated list of types
+that the shell expects to find in the variable. If the type is of the
+form =returnType f(argType, argType, ...)=, the value may be a Lua
+function of the described prototype (the name =f= does not matter).
 
 If no types are defined, the modification of the variable has no
 effect on the interpreter's startup (the global is read-only, or
 kind-of).
-
-| name     | initial value                        | description                   | types              |
-|----------+--------------------------------------+-------------------------------+--------------------|
-| CONFFILE | $XDG_CONFIG_HOME/luashell/config.lua | the interpreter's config file |                    |
-| HISTFILE | $XDG_DATA_HOME/luashell/history      | the shell's history file      | string, string f() |
-| PROMPT   | ">>>"                                | the shell's prompt            | string, string f() |
-| BANNER   | ""                                   | the shell's banner            | string, string f() |
 
 For a list of available types (applicable to =returnType= and =argType=),
 see the [[https://www.lua.org/manual/5.4/manual.html#pdf-type][types used by Lua]]. Their name may be shortened in the table,
