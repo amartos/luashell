@@ -30,7 +30,7 @@ namespace fs = std::experimental::filesystem;
  *   represents the file name;
  * - #VAR: the global's variable name in Lua
  */
-enum GlobalsIndex {XDG, XDGDEF, VAL, VAR};
+enum GlobalsIndex {VAR, VAL, XDG, XDGDEF};
 
 /**
  * @var GLOBALS
@@ -40,10 +40,10 @@ enum GlobalsIndex {XDG, XDGDEF, VAL, VAR};
  * on the global's variable name).
  */
 static const char* const GLOBALS[][4] {
-    {"XDG_CONFIG_HOME", "~/.config", "config.lua", "CONFFILE"},
-    {"XDG_DATA_HOME", "~/.local/share", "history", "HISTFILE"},
-    {NULL, NULL, ">>> ", "PROMPT"},
-    {NULL, NULL, "", "BANNER"},
+    {"CONFFILE", "config.lua", "XDG_CONFIG_HOME", "~/.config"},
+    {"HISTFILE", "history", "XDG_DATA_HOME", "~/.local/share"},
+    {"PROMPT", ">>> ",},
+    {"BANNER", "",},
     {NULL,}
 };
 
