@@ -17,6 +17,13 @@ namespace fs = std::experimental::filesystem;
 #include "readline/history.h"
 
 /**
+ * @enum GlobalsIndex
+ * @since 0.2.1
+ * @brief Index of components in the #GLOBALS variable.
+ */
+enum GlobalsIndex {XDG, XDGDEF, VAL, VAR};
+
+/**
  * @var GLOBALS
  * @since 0.2.0
  * @brief Shell predefined globals.
@@ -49,19 +56,19 @@ static void lua_setGlobals(lua_State *L)
 {
     const char* value {};
     fs::path path {};
-    for (auto i = 0; GLOBALS[i][3]; ++i) {
-        value = GLOBALS[i][0];
-        if ((value && (value = std::getenv(value)) && *value) || (value = GLOBALS[i][1])) {
+    for (auto i = 0; GLOBALS[i][VAR]; ++i) {
+        value = GLOBALS[i][XDG];
+        if ((value && (value = std::getenv(value)) && *value) || (value = GLOBALS[i][XDGDEF])) {
             path  = value;
             path /= "/luashell/";
             fs::create_directories(path);
-            path /= GLOBALS[i][2];
+            path /= GLOBALS[i][VAL];
             value = path.c_str();
         }
-        else value = GLOBALS[i][2];
+        else value = GLOBALS[i][VAL];
 
         lua_pushstring(L, value);
-        lua_setglobal(L, GLOBALS[i][3]);
+        lua_setglobal(L, GLOBALS[i][VAR]);
     }
 }
 
