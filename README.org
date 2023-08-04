@@ -8,9 +8,9 @@ library.
 
 ** Configuration
 
-The interpreter loads the file located at
-=$XDG_CONFIG_HOME/luashell/config.lua=, if it exists, before execution
-of any script or the shell's prompt.
+The interpreter loads the file located at =$LUASHELL_CONFFILE= if
+defined, or =$XDG_CONFIG_HOME/luashell/config.lua=, if it exists, before
+execution of any script or the shell's prompt.
 
 ** Environment
 
