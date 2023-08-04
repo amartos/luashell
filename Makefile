@@ -6,12 +6,18 @@ TESTS	= tests
 TUNITS	= $(TESTS)/scripts
 TLOGS	= $(TESTS)/logs
 EXE		= $(BIN)/luashell
-COPTS	= $(shell cat compile_flags.txt) -O3
+COPTS	= $(shell cat compile_flags.txt)
 CPP		= g++
 
 all: compile
 
-compile: init
+compile: COPTS += -O3
+compile: _compile
+
+debug: COPTS += -g
+debug: _compile
+
+_compile: init
 	@$(CPP) $(SRC) $(COPTS) -o $(EXE)
 
 init:
