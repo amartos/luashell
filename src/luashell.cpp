@@ -112,7 +112,6 @@ static void scripts(lua_State *L, const char* scripts[])
  * @since 0.1.0
  * @brief Fire up a simple Lua shell.
  * @note Send #EOF (ctrl + d) to exit.
- * @warning The shell does not save the sessions' history.
  * @param L Lua's stack.
  */
 static void shell(lua_State *L)
